@@ -20,8 +20,7 @@
   "scripts": {
     "prepack": "tsc -b",
     "dev": "tsc-watch",
-    "build": "tsc",
-    "prepublish": "npm run build"
+    "build": "tsc"
   },
   "engines": {
     "node": ">=8.0.0"
