@@ -151,9 +151,16 @@ function getCustomAttributes(datamodel: string) {
         /onUpdate: (?<op>Cascade|NoAction|Restrict|SetDefault|SetNull)/
       );
       const doubleAtIndexRegex = new RegExp(/(?<index>@@index\(.*\))/);
+      const doubleAtFullTextRegex = new RegExp(/(?<fulltext>@@fulltext\(.*\))/);
       const doubleAtIndexes = pieces
         .reduce((ac: string[], field) => {
           const item = field.match(doubleAtIndexRegex)?.groups?.index;
+          return item ? [...ac, item] : ac;
+        }, [])
+        .filter((f) => f);
+      const doubleAtFullText = pieces
+        .reduce((ac: string[], field) => {
+          const item = field.match(doubleAtFullTextRegex)?.groups?.index;
           return item ? [...ac, item] : ac;
         }, [])
         .filter((f) => f);
@@ -171,7 +178,11 @@ function getCustomAttributes(datamodel: string) {
 
       return {
         ...modelDefinitions,
-        [modelName]: { fields: Object.fromEntries(fieldsWithCustomAttributes), doubleAtIndexes }
+        [modelName]: {
+          fields: Object.fromEntries(fieldsWithCustomAttributes),
+          doubleAtIndexes,
+          doubleAtFullText
+        }
       };
     },
     {}
