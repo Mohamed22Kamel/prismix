@@ -19,7 +19,7 @@ const renderAttribute = (field) => {
                 return '';
             if (kind === 'scalar' && type !== 'BigInt' && typeof value == 'string')
                 value = `"${value}"`;
-            if (utils_1.valueIs(value, [Number, String, Boolean]) || kind === 'enum')
+            if ((0, utils_1.valueIs)(value, [Number, String, Boolean]) || kind === 'enum')
                 return `@default(${value})`;
             if (typeof value === 'object') {
                 if (value.name === 'dbgenerated')
@@ -93,6 +93,12 @@ function renderProvider(provider) {
 function renderOutput(path) {
     return path ? `output = "${path}"` : '';
 }
+function renderEnumFileName(path) {
+    return path ? `enumFileName = "${path}"` : '';
+}
+function renderFileName(path) {
+    return path ? `fileName = "${path}"` : '';
+}
 function renderBinaryTargets(binaryTargets) {
     return (binaryTargets === null || binaryTargets === void 0 ? void 0 : binaryTargets.length) ? `binaryTargets = ${JSON.stringify(binaryTargets)}` : '';
 }
@@ -120,10 +126,12 @@ function deserializeDatasource(datasource) {
     return renderBlock('datasource', name, [renderProvider(provider), renderUrl(url)]);
 }
 function deserializeGenerator(generator) {
-    const { binaryTargets, name, output, provider, previewFeatures } = generator;
+    const { binaryTargets, name, output, provider, previewFeatures, config } = generator;
     return renderBlock('generator', name, [
         renderProvider(provider.value),
         renderOutput((output === null || output === void 0 ? void 0 : output.value) || null),
+        renderEnumFileName((config === null || config === void 0 ? void 0 : config.enumFileName) || null),
+        renderFileName((config === null || config === void 0 ? void 0 : config.fileName) || null),
         renderBinaryTargets(binaryTargets),
         renderPreviewFeatures(previewFeatures)
     ]);

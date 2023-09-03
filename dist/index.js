@@ -18,7 +18,7 @@ const jsonfile_1 = __importDefault(require("jsonfile"));
 const path_1 = __importDefault(require("path"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const readJsonFile = util_1.promisify(jsonfile_1.default.readFile);
+const readJsonFile = (0, util_1.promisify)(jsonfile_1.default.readFile);
 const args = process.argv.slice(2);
 class Prismix extends command_1.Command {
     run() {
@@ -29,7 +29,7 @@ class Prismix extends command_1.Command {
                 if (!mixer.output)
                     mixer.output = 'prisma/schema.prisma';
             }
-            yield prismix_1.prismix(options);
+            yield (0, prismix_1.prismix)(options);
         });
     }
 }

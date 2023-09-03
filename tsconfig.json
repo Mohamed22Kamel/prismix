@@ -1,18 +1,28 @@
 {
-    "compilerOptions": {
-      "lib": ["esnext", "esnext.asynciterable"],
-      "module": "commonjs",
-      "target": "es2016",
-      "strict": true,
-      "removeComments": true,
-      "esModuleInterop": true,
-      "sourceMap": true,
-      "noImplicitAny": false,
-      "outDir": "dist",
-      "declaration": true,
-      "incremental": true,
-      "typeRoots": ["./node_modules/@types"]
-    },
-    "include": ["lib/**/*"],
-    "exclude": ["dist/**"]
-  }
+  "compilerOptions": {
+    "lib": [
+      "esnext",
+      "esnext.asynciterable"
+    ],
+    "module": "commonjs",
+    "target": "es2016",
+    "strict": true,
+    "removeComments": true,
+    "esModuleInterop": true,
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "outDir": "dist",
+    "declaration": true,
+    "incremental": true,
+    "skipLibCheck": true,
+    "typeRoots": [
+      "./node_modules/@types"
+    ]
+  },
+  "include": [
+    "lib/**/*"
+  ],
+  "exclude": [
+    "dist/**"
+  ]
+}
