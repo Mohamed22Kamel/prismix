@@ -14,8 +14,6 @@
   "author": "Jamie Pine",
   "email": "hello@jamiepine.com",
   "license": "MIT",
-  "homepage": "https://github.com/jamiepine/prismix#readme",
-  "repository": "https://github.com/jamiepine/prismix",
   "private": false,
   "scripts": {
     "prepack": "tsc -b",
