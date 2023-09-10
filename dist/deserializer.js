@@ -112,13 +112,13 @@ function renderBlock(type, name, things, documentation) {
         .join('\n')}\n}`;
 }
 function deserializeModel(model) {
-    const { name, fields, dbName, idFields, primaryKey, doubleAtIndexes, uniqueIndexes, documentation } = model;
+    var _a;
+    const { name, fields, dbName, primaryKey, uniqueIndexes, documentation } = model;
     return renderBlock('model', name, [
         ...renderModelFields(fields),
         ...renderUniqueIndexes(uniqueIndexes),
-        ...(doubleAtIndexes !== null && doubleAtIndexes !== void 0 ? doubleAtIndexes : []),
         renderDbName(dbName),
-        renderIdFieldsOrPrimaryKey(idFields || (primaryKey === null || primaryKey === void 0 ? void 0 : primaryKey.fields))
+        renderIdFieldsOrPrimaryKey((_a = primaryKey === null || primaryKey === void 0 ? void 0 : primaryKey.fields) !== null && _a !== void 0 ? _a : [])
     ], documentation);
 }
 function deserializeDatasource(datasource) {
@@ -128,7 +128,7 @@ function deserializeDatasource(datasource) {
 function deserializeGenerator(generator) {
     const { binaryTargets, name, output, provider, previewFeatures, config } = generator;
     return renderBlock('generator', name, [
-        renderProvider(provider.value),
+        renderProvider(provider.value || ""),
         renderOutput((output === null || output === void 0 ? void 0 : output.value) || null),
         renderEnumFileName((config === null || config === void 0 ? void 0 : config.enumFileName) || null),
         renderFileName((config === null || config === void 0 ? void 0 : config.fileName) || null),

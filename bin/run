@@ -9,4 +9,4 @@ if (dev) {
   require('ts-node').register({ project });
 }
 
-require(`../dist`).run().catch(require('@oclif/errors/handle'));
+require(`../dist`).run().catch(require('@oclif/core/handle'));

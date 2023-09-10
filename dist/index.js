@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-const command_1 = require("@oclif/command");
+const core_1 = require("@oclif/core");
 const prismix_1 = require("./prismix");
 const util_1 = require("util");
 const jsonfile_1 = __importDefault(require("jsonfile"));
@@ -20,7 +20,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const readJsonFile = (0, util_1.promisify)(jsonfile_1.default.readFile);
 const args = process.argv.slice(2);
-class Prismix extends command_1.Command {
+class Prismix extends core_1.Command {
     run() {
         return __awaiter(this, void 0, void 0, function* () {
             this.log(`Prismix: mixing your schemas... 🍹`);
@@ -35,8 +35,8 @@ class Prismix extends command_1.Command {
 }
 Prismix.description = 'Allows you to have multiple Prisma schema files with shared model relations.';
 Prismix.flags = {
-    version: command_1.flags.version({ char: 'v' }),
-    help: command_1.flags.help({ char: 'h' })
+    version: core_1.Flags.version({ char: 'v' }),
+    help: core_1.Flags.help({ char: 'h' })
 };
 module.exports = Prismix;
 //# sourceMappingURL=index.js.map

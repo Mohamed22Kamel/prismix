@@ -1,4 +1,4 @@
-import { Command, flags } from '@oclif/command';
+import {Command, Flags} from '@oclif/core'
 import { prismix, PrismixOptions } from './prismix';
 import { promisify } from 'util';
 import jsonfile from 'jsonfile';
@@ -16,8 +16,8 @@ class Prismix extends Command {
     'Allows you to have multiple Prisma schema files with shared model relations.';
 
   static flags = {
-    version: flags.version({ char: 'v' }),
-    help: flags.help({ char: 'h' })
+    version: Flags.version({ char: 'v' }),
+    help: Flags.help({ char: 'h' })
   };
 
   async run() {

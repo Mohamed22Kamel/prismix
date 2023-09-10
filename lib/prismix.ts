@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { promisify } from 'util';
 import path from 'path';
-import { getDMMF, getConfig } from '@prisma/sdk';
+import { getDMMF, getConfig } from '@prisma/internals';
 import {
   deserializeEnums,
   deserializeDatasources,
@@ -9,7 +9,7 @@ import {
   deserializeGenerators
 } from './deserializer';
 import { DataSource, DMMF, GeneratorConfig } from '@prisma/generator-helper/dist';
-import glob from 'glob';
+import  { globSync } from 'glob';
 import { CustomAttributes, Field, Model } from './dmmf-extension';
 
 const readFile = promisify(fs.readFile);
@@ -184,7 +184,7 @@ export async function prismix(options: PrismixOptions) {
 
     // load the schema data for all inputs
     for (const input of mixer.input) {
-      for (const file of glob.sync(input)) {
+      for (const file of globSync(input)) {
         const parsedSchema = await getSchema(file);
         if (parsedSchema) schemasToMix.push(parsedSchema);
       }

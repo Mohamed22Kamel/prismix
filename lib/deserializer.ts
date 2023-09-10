@@ -152,9 +152,9 @@ function deserializeModel(model: DMMF.Model): string {
     name,
     fields,
     dbName,
-    idFields,
+    
     primaryKey,
-    doubleAtIndexes,
+    
     uniqueIndexes,
     documentation
   } = model;
@@ -164,9 +164,8 @@ function deserializeModel(model: DMMF.Model): string {
     [
       ...renderModelFields(fields),
       ...renderUniqueIndexes(uniqueIndexes),
-      ...(doubleAtIndexes ?? []),
       renderDbName(dbName),
-      renderIdFieldsOrPrimaryKey(idFields || primaryKey?.fields)
+      renderIdFieldsOrPrimaryKey(primaryKey?.fields ?? [])
     ],
     documentation
   );
@@ -180,10 +179,10 @@ function deserializeDatasource(datasource: DataSource): string {
 function deserializeGenerator(generator: GeneratorConfig): string {
   const { binaryTargets, name, output, provider, previewFeatures, config } = generator;
   return renderBlock('generator', name, [
-    renderProvider(provider.value),
+    renderProvider(provider.value||""),
     renderOutput(output?.value || null),
-    renderEnumFileName(config?.enumFileName || null),
-    renderFileName(config?.fileName || null),
+    renderEnumFileName(config?.enumFileName as string || null),
+    renderFileName(config?.fileName as string || null),
     renderBinaryTargets(binaryTargets as unknown as string[]),
     renderPreviewFeatures(previewFeatures)
   ]);

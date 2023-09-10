@@ -1,9 +1,9 @@
-import { Command } from '@oclif/command';
+import { Command } from '@oclif/core';
 declare class Prismix extends Command {
     static description: string;
     static flags: {
-        version: import("@oclif/parser/lib/flags").IBooleanFlag<void>;
-        help: import("@oclif/parser/lib/flags").IBooleanFlag<void>;
+        version: import("@oclif/core/lib/interfaces").BooleanFlag<void>;
+        help: import("@oclif/core/lib/interfaces").BooleanFlag<void>;
     };
     run(): Promise<void>;
 }

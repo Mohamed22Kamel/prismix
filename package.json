@@ -38,10 +38,11 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@oclif/command": "^1.8.0",
-    "@oclif/config": "^1.17.0",
-    "@oclif/plugin-help": "^5.2.19",
+    "@oclif/core": "^2.15.0",
+    "@prisma/generator-helper": "^5.2.0",
+    "@prisma/internals": "^5.2.0",
     "@prisma/sdk": "^4.0.0",
+    "dotenv": "^16.3.1",
     "glob": "^10.3.4",
     "jsonfile": "^6.1.0",
     "tsc-watch": "^6.0.4"

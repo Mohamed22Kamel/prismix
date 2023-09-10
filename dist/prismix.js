@@ -16,9 +16,9 @@ exports.prismix = void 0;
 const fs_1 = __importDefault(require("fs"));
 const util_1 = require("util");
 const path_1 = __importDefault(require("path"));
-const sdk_1 = require("@prisma/sdk");
+const internals_1 = require("@prisma/internals");
 const deserializer_1 = require("./deserializer");
-const glob_1 = __importDefault(require("glob"));
+const glob_1 = require("glob");
 const readFile = (0, util_1.promisify)(fs_1.default.readFile);
 const writeFile = (0, util_1.promisify)(fs_1.default.writeFile);
 function getSchema(schemaPath) {
@@ -27,7 +27,7 @@ function getSchema(schemaPath) {
             const schema = yield readFile(path_1.default.join(process.cwd(), schemaPath), {
                 encoding: 'utf-8'
             });
-            const dmmf = yield (0, sdk_1.getDMMF)({ datamodel: schema });
+            const dmmf = yield (0, internals_1.getDMMF)({ datamodel: schema });
             const customAttributes = getCustomAttributes(schema);
             const models = dmmf.datamodel.models.map((model) => {
                 var _a;
@@ -37,7 +37,7 @@ function getSchema(schemaPath) {
                         return Object.assign(Object.assign({}, field), { columnName: attributes.columnName, dbType: attributes.dbType, relationOnUpdate: attributes.relationOnUpdate });
                     }) }));
             });
-            const config = yield (0, sdk_1.getConfig)({ datamodel: schema });
+            const config = yield (0, internals_1.getConfig)({ datamodel: schema });
             return {
                 models,
                 enums: dmmf.datamodel.enums,
@@ -136,7 +136,7 @@ function prismix(options) {
         for (const mixer of options.mixers) {
             const schemasToMix = [];
             for (const input of mixer.input) {
-                for (const file of glob_1.default.sync(input)) {
+                for (const file of (0, glob_1.globSync)(input)) {
                     const parsedSchema = yield getSchema(file);
                     if (parsedSchema)
                         schemasToMix.push(parsedSchema);
