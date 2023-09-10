@@ -128,11 +128,10 @@ function deserializeDatasource(datasource) {
 function deserializeGenerator(generator) {
     const { binaryTargets, name, output, provider, previewFeatures, config } = generator;
     return renderBlock('generator', name, [
-        renderProvider(provider.value || ""),
+        renderProvider(provider.value || ''),
         renderOutput((output === null || output === void 0 ? void 0 : output.value) || null),
         renderEnumFileName((config === null || config === void 0 ? void 0 : config.enumFileName) || null),
         renderFileName((config === null || config === void 0 ? void 0 : config.fileName) || null),
-        renderBinaryTargets(binaryTargets),
         renderPreviewFeatures(previewFeatures)
     ]);
 }

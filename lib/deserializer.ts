@@ -148,16 +148,7 @@ function renderBlock(type: string, name: string, things: string[], documentation
 }
 
 function deserializeModel(model: DMMF.Model): string {
-  const {
-    name,
-    fields,
-    dbName,
-    
-    primaryKey,
-    
-    uniqueIndexes,
-    documentation
-  } = model;
+  const { name, fields, dbName, primaryKey, uniqueIndexes, documentation } = model;
   return renderBlock(
     'model',
     name,
@@ -179,11 +170,11 @@ function deserializeDatasource(datasource: DataSource): string {
 function deserializeGenerator(generator: GeneratorConfig): string {
   const { binaryTargets, name, output, provider, previewFeatures, config } = generator;
   return renderBlock('generator', name, [
-    renderProvider(provider.value||""),
+    renderProvider(provider.value || ''),
     renderOutput(output?.value || null),
-    renderEnumFileName(config?.enumFileName as string || null),
-    renderFileName(config?.fileName as string || null),
-    renderBinaryTargets(binaryTargets as unknown as string[]),
+    renderEnumFileName((config?.enumFileName as string) || null),
+    renderFileName((config?.fileName as string) || null),
+    // renderBinaryTargets(binaryTargets as unknown as string[]),
     renderPreviewFeatures(previewFeatures)
   ]);
 }
