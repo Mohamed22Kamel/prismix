@@ -42,13 +42,12 @@
     "@prisma/generator-helper": "^5.2.0",
     "@prisma/internals": "^5.2.0",
     "@prisma/sdk": "^4.0.0",
-    "dotenv": "^16.3.1",
     "glob": "^10.3.4",
     "jsonfile": "^6.1.0",
     "tsc-watch": "^6.0.4"
   },
   "peerDependencies": {
-    "dotenv": "^10.0.0"
+    "dotenv": "^16.3.1"
   },
   "bin": {
     "prismix": "./bin/run"
