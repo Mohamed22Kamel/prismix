@@ -34,9 +34,11 @@ const renderAttribute = (field: Field) => {
     dbType: (value: any) => value ?? ''
   };
 };
-
+interface relation extends DMMF.Field {
+  relationOnUpdate?: string;
+}
 // Render a line of field attributes
-function renderAttributes(field: DMMF.Field): string {
+function renderAttributes(field: relation): string {
   const {
     relationFromFields,
     relationToFields,
