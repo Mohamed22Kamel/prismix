@@ -19,6 +19,7 @@ const path_1 = __importDefault(require("path"));
 const internals_1 = require("@prisma/internals");
 const deserializer_1 = require("./deserializer");
 const glob_1 = require("glob");
+const utils_1 = require("./utils");
 const readFile = (0, util_1.promisify)(fs_1.default.readFile);
 const writeFile = (0, util_1.promisify)(fs_1.default.writeFile);
 function getSchema(schemaPath) {
@@ -51,7 +52,7 @@ function getSchema(schemaPath) {
     });
 }
 function mixModels(inputModels) {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f;
     const models = {};
     for (const newModel of inputModels) {
         const existingModel = models[newModel.name];
@@ -84,12 +85,14 @@ function mixModels(inputModels) {
                 ];
             }
             if ((_c = newModel.uniqueIndexes) === null || _c === void 0 ? void 0 : _c.length) {
-                existingModel.uniqueIndexes = [
-                    ...((_d = existingModel.uniqueIndexes) !== null && _d !== void 0 ? _d : []),
-                    ...newModel.uniqueIndexes
-                ];
+                for (const index of newModel.uniqueIndexes) {
+                    if ((0, utils_1.containsObject)(index, (_d = existingModel.uniqueIndexes) !== null && _d !== void 0 ? _d : [])) {
+                        console.log('adding index', index);
+                        existingModel.uniqueIndexes = [...((_e = existingModel.uniqueIndexes) !== null && _e !== void 0 ? _e : []), index];
+                    }
+                }
                 existingModel.uniqueFields = [
-                    ...((_e = existingModel.uniqueFields) !== null && _e !== void 0 ? _e : []),
+                    ...((_f = existingModel.uniqueFields) !== null && _f !== void 0 ? _f : []),
                     ...newModel.uniqueFields
                 ];
             }

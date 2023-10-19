@@ -1,6 +1,6 @@
 {
   "name": "prismix",
-  "version": "1.0.23",
+  "version": "1.0.30",
   "description": "Create multiple Prisma schema files with shared model relations.",
   "keywords": [
     "prisma",
@@ -29,17 +29,17 @@
   ],
   "devDependencies": {
     "@types/glob": "^8.1.0",
-    "@types/jest": "^29.5.4",
-    "@types/jsonfile": "^6.0.1",
+    "@types/jest": "^29.5.5",
+    "@types/jsonfile": "^6.1.2",
     "prettier": "^3.0.3",
-    "ts-node": "^10.1.0",
+    "ts-node": "^10.9.1",
     "typescript": "^5.2.2"
   },
   "dependencies": {
     "@oclif/core": "^2.15.0",
-    "@prisma/generator-helper": "^5.2.0",
-    "@prisma/internals": "^5.2.0",
-    "glob": "^10.3.4",
+    "@prisma/generator-helper": "^5.3.1",
+    "@prisma/internals": "^5.3.1",
+    "glob": "^10.3.10",
     "jsonfile": "^6.1.0",
     "tsc-watch": "^6.0.4"
   },
