@@ -8,9 +8,10 @@ import {
   deserializeModels,
   deserializeGenerators
 } from './deserializer';
-import { DataSource, DMMF, GeneratorConfig } from '@prisma/generator-helper/dist';
-import  { globSync } from 'glob';
+import { DataSource, DMMF, GeneratorConfig } from '@prisma/generator-helper';
+import { globSync } from 'glob';
 import { CustomAttributes, Field, Model } from './dmmf-extension';
+import { containsObject } from './utils';
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -115,10 +116,12 @@ function mixModels(inputModels: Model[]) {
 
       // Merge unique indexes (@@unique) based on new model if found
       if (newModel.uniqueIndexes?.length) {
-        existingModel.uniqueIndexes = [
-          ...(existingModel.uniqueIndexes ?? []),
-          ...newModel.uniqueIndexes
-        ];
+        for (const index of newModel.uniqueIndexes) {
+          if (containsObject(index, existingModel.uniqueIndexes ?? [])) {
+            console.log('adding index', index);
+            existingModel.uniqueIndexes = [...(existingModel.uniqueIndexes ?? []), index];
+          }
+        }
         existingModel.uniqueFields = [
           ...(existingModel.uniqueFields ?? []),
           ...newModel.uniqueFields
