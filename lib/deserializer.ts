@@ -201,7 +201,19 @@ export async function deserializeGenerators(generators: GeneratorConfig[]) {
   return generators.map((generator) => deserializeGenerator(generator)).join('\n');
 }
 export async function deserializeEnums(enums: DMMF.DatamodelEnum[]) {
-  return enums.map((each) => deserializeEnum(each)).join('\n');
+  const enumNames: string[] = [];
+  return enums
+    .map((each) => {
+      if (enumNames.includes(each.name)) {
+        console.log(
+          `Enum *${each.name}* already defined before i will accept first definition only recheck your schema`
+        );
+        return '';
+      }
+      enumNames.push(each.name);
+      return deserializeEnum(each);
+    })
+    .join('\n');
 }
 
 // Adapted from https://github.com/IBM/prisma-schema-transformer/blob/53a173185b/src/deserializer.ts
