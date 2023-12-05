@@ -164,7 +164,17 @@ function deserializeGenerators(generators) {
 exports.deserializeGenerators = deserializeGenerators;
 function deserializeEnums(enums) {
     return __awaiter(this, void 0, void 0, function* () {
-        return enums.map((each) => deserializeEnum(each)).join('\n');
+        const enumNames = [];
+        return enums
+            .map((each) => {
+            if (enumNames.includes(each.name)) {
+                console.log(`Enum *${each.name}* already defined before i will accept first definition only recheck your schema`);
+                return '';
+            }
+            enumNames.push(each.name);
+            return deserializeEnum(each);
+        })
+            .join('\n');
     });
 }
 exports.deserializeEnums = deserializeEnums;
