@@ -152,7 +152,7 @@ function renderBlock(type: string, name: string, things: string[], documentation
 function deserializeModel(model: DMMF.Model): string {
   const { name, fields, dbName, primaryKey, uniqueIndexes, documentation } = model;
   return renderBlock(
-    'model',
+    name.includes('view') ? 'view' : 'model',
     name,
     [
       ...renderModelFields(fields),

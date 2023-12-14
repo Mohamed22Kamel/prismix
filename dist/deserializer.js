@@ -114,7 +114,7 @@ function renderBlock(type, name, things, documentation) {
 function deserializeModel(model) {
     var _a;
     const { name, fields, dbName, primaryKey, uniqueIndexes, documentation } = model;
-    return renderBlock('model', name, [
+    return renderBlock(name.includes('view') ? 'view' : 'model',, name, [
         ...renderModelFields(fields),
         ...renderUniqueIndexes(uniqueIndexes),
         renderDbName(dbName),
