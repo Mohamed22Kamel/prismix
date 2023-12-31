@@ -112,7 +112,7 @@ function getCustomAttributes(datamodel) {
         if (!modelName)
             return modelDefinitions;
         const mapRegex = new RegExp(/[^@]@map\("(?<name>.*)"\)/);
-        const dbRegex = new RegExp(/(?<type>@db\.(.[^\s@]*))/);
+        const dbRegex = new RegExp(/(?<type>@db\.[^\s@]+\(.+?\))/);
         const relationOnUpdateRegex = new RegExp(/onUpdate: (?<op>Cascade|NoAction|Restrict|SetDefault|SetNull)/);
         const doubleAtIndexRegex = new RegExp(/(?<index>@@index\(.*\))/);
         const doubleAtIndexes = pieces
