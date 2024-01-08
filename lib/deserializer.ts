@@ -36,6 +36,7 @@ const renderAttribute = (field: Field) => {
 };
 interface relation extends DMMF.Field {
   relationOnUpdate?: string;
+  map?: string;
 }
 // Render a line of field attributes
 function renderAttributes(field: relation): string {
@@ -65,7 +66,9 @@ function renderAttributes(field: relation): string {
     if (relationFromFields.length > 0) {
       return `@relation(name: "${relationName}", fields: [${relationFromFields}], references: [${relationToFields}]${
         relationOnDelete ? `, onDelete: ${relationOnDelete}` : ''
-      }${relationOnUpdate ? `, onUpdate: ${relationOnUpdate}` : ''}${map ? `, map: "${map}"` : ''})`;
+      }${relationOnUpdate ? `, onUpdate: ${relationOnUpdate}` : ''}${
+        map ? `, map: "${map}"` : ''
+      })`;
     } else {
       return `@relation(name: "${relationName}")`;
     }
@@ -155,7 +158,6 @@ function renderBlock(type: string, name: string, things: string[], documentation
 function deserializeModel(model: DMMF.Model): string {
   const { name, fields, dbName, primaryKey, uniqueIndexes, documentation } = model;
   return renderBlock(
-    
     name.includes('view') ? 'view' : 'model',
     name,
     [

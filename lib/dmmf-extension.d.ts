@@ -3,6 +3,7 @@ export type CustomFieldAttributes = {
   columnName?: string;
   dbType?: string;
   relationOnUpdate?: string;
+  map?: string;
 };
 export type CustomModelAttributes = { doubleAtIndexes?: string[] };
 
