@@ -45,7 +45,8 @@ function renderAttributes(field: relation): string {
     relationName,
     kind,
     relationOnDelete,
-    relationOnUpdate
+    relationOnUpdate,
+    map
   } = field;
   // handle attributes for scalar and enum fields
   if (kind == 'scalar' || kind == 'enum') {
@@ -61,11 +62,13 @@ function renderAttributes(field: relation): string {
   }
   // handle relation syntax
   if (relationFromFields && kind === 'object') {
-    return relationFromFields.length > 0
-      ? `@relation(name: "${relationName}", fields: [${relationFromFields}], references: [${relationToFields}]${
-          relationOnDelete ? `, onDelete: ${relationOnDelete}` : ''
-        }${relationOnUpdate ? `, onUpdate: ${relationOnUpdate}` : ''})`
-      : `@relation(name: "${relationName}")`;
+    if (relationFromFields.length > 0) {
+      return `@relation(name: "${relationName}", fields: [${relationFromFields}], references: [${relationToFields}]${
+        relationOnDelete ? `, onDelete: ${relationOnDelete}` : ''
+      }${relationOnUpdate ? `, onUpdate: ${relationOnUpdate}` : ''}${map ? `, map: "${map}"` : ''})`;
+    } else {
+      return `@relation(name: "${relationName}")`;
+    }
   }
   return '';
 }
