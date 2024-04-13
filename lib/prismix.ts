@@ -37,7 +37,7 @@ async function getSchema(schemaPath: string) {
 
     const dmmf = await getDMMF({ datamodel: schema });
     const customAttributes = getCustomAttributes(schema);
-    const models: Model[] = dmmf.datamodel.models.map((model: Model) => ({
+    const models = dmmf.datamodel.models.map((model) => ({
       ...model,
       doubleAtIndexes: customAttributes[model.name]?.doubleAtIndexes,
       fields: model.fields.map((field) =>
@@ -73,32 +73,33 @@ async function getSchema(schemaPath: string) {
 function mixModels(inputModels: Model[]) {
   const models: Record<string, Model> = {};
   for (const newModel of inputModels) {
-    const existingModel: Model | null = models[newModel.name];
+    const existingModel: Mutable<Model> | null = models[newModel.name];
     // if the model already exists in our found models, merge the fields
     if (existingModel) {
       const existingFieldNames = existingModel.fields.map((f) => f.name);
       for (const newField of newModel.fields) {
+        const mutableField: Mutable<Field> = newField;
         // if this field exists in the existing model
-        if (existingFieldNames.includes(newField.name)) {
-          const existingFieldIndex: number = existingFieldNames.indexOf(newField.name);
+        if (existingFieldNames.includes(mutableField.name)) {
+          const existingFieldIndex: number = existingFieldNames.indexOf(mutableField.name);
 
           // Assign columnName (@map) based on existing field if found
           const existingField: Field = existingModel.fields[existingFieldIndex];
-          if (!newField.columnName && existingField.columnName) {
-            newField.columnName = existingField.columnName;
+          if (!mutableField.columnName && existingField.columnName) {
+            mutableField.columnName = existingField.columnName;
           }
 
           // Assign defaults based on existing field if found
-          if (!newField.hasDefaultValue && existingField.hasDefaultValue) {
-            newField.hasDefaultValue = true;
-            newField.default = existingField.default;
+          if (!mutableField.hasDefaultValue && existingField.hasDefaultValue) {
+            mutableField.hasDefaultValue = true;
+            mutableField.default = existingField.default;
           }
 
           // replace the field at this index with the new one
-          existingModel.fields[existingFieldIndex] = newField;
+          existingModel.fields[existingFieldIndex] = mutableField;
         } else {
           // if it doesn't already exist, append to field list
-          existingModel.fields.push(newField);
+          existingModel.fields.push(mutableField);
         }
       }
       // Assign dbName (@@map) based on new model if found
@@ -117,7 +118,7 @@ function mixModels(inputModels: Model[]) {
       // Merge unique indexes (@@unique) based on new model if found
       if (newModel.uniqueIndexes?.length) {
         for (const index of newModel.uniqueIndexes) {
-          if (containsObject(index, existingModel.uniqueIndexes ?? [])) {
+          if (containsObject(index, (existingModel.uniqueIndexes as unknown as Object[]) ?? [])) {
             console.log('adding index', index);
             existingModel.uniqueIndexes = [...(existingModel.uniqueIndexes ?? []), index];
           }
@@ -149,7 +150,7 @@ function getCustomAttributes(datamodel: string) {
       if (!modelName) return modelDefinitions;
       // Regex for getting our @map attribute
       const mapRegex = new RegExp(/[^@]@map\("(?<name>.*)"\)/);
-      const dbRegex = new RegExp(/(?<type>@db\.[^\s@]+\(.+?\))/);
+      const dbRegex = new RegExp(/@db\.(?<type>[^\s()]+(?:\([^)]+\))?)/g);
       const relationOnUpdateRegex = new RegExp(
         /onUpdate: (?<op>Cascade|NoAction|Restrict|SetDefault|SetNull)/
       );
@@ -163,7 +164,7 @@ function getCustomAttributes(datamodel: string) {
       const fieldsWithCustomAttributes = pieces
         .map((field) => {
           const columnName = field.match(mapRegex)?.groups?.name;
-          const dbType = field.match(dbRegex)?.groups?.type;
+          const dbType = field.match(dbRegex)?.at(0);
           const relationOnUpdate = field.match(relationOnUpdateRegex)?.groups?.op;
           return [field.trim().split(' ')[0], { columnName, dbType, relationOnUpdate }] as [
             string,

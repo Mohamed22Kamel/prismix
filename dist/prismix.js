@@ -59,20 +59,21 @@ function mixModels(inputModels) {
         if (existingModel) {
             const existingFieldNames = existingModel.fields.map((f) => f.name);
             for (const newField of newModel.fields) {
-                if (existingFieldNames.includes(newField.name)) {
-                    const existingFieldIndex = existingFieldNames.indexOf(newField.name);
+                const mutableField = newField;
+                if (existingFieldNames.includes(mutableField.name)) {
+                    const existingFieldIndex = existingFieldNames.indexOf(mutableField.name);
                     const existingField = existingModel.fields[existingFieldIndex];
-                    if (!newField.columnName && existingField.columnName) {
-                        newField.columnName = existingField.columnName;
+                    if (!mutableField.columnName && existingField.columnName) {
+                        mutableField.columnName = existingField.columnName;
                     }
-                    if (!newField.hasDefaultValue && existingField.hasDefaultValue) {
-                        newField.hasDefaultValue = true;
-                        newField.default = existingField.default;
+                    if (!mutableField.hasDefaultValue && existingField.hasDefaultValue) {
+                        mutableField.hasDefaultValue = true;
+                        mutableField.default = existingField.default;
                     }
-                    existingModel.fields[existingFieldIndex] = newField;
+                    existingModel.fields[existingFieldIndex] = mutableField;
                 }
                 else {
-                    existingModel.fields.push(newField);
+                    existingModel.fields.push(mutableField);
                 }
             }
             if (!existingModel.dbName && newModel.dbName) {
@@ -112,7 +113,7 @@ function getCustomAttributes(datamodel) {
         if (!modelName)
             return modelDefinitions;
         const mapRegex = new RegExp(/[^@]@map\("(?<name>.*)"\)/);
-        const dbRegex = new RegExp(/(?<type>@db\.[^\s@]+\(.+?\))/);
+        const dbRegex = new RegExp(/@db\.(?<type>[^\s()]+(?:\([^)]+\))?)/g);
         const relationOnUpdateRegex = new RegExp(/onUpdate: (?<op>Cascade|NoAction|Restrict|SetDefault|SetNull)/);
         const doubleAtIndexRegex = new RegExp(/(?<index>@@index\(.*\))/);
         const doubleAtIndexes = pieces
@@ -124,10 +125,10 @@ function getCustomAttributes(datamodel) {
             .filter((f) => f);
         const fieldsWithCustomAttributes = pieces
             .map((field) => {
-            var _a, _b, _c, _d, _e, _f;
+            var _a, _b, _c, _d, _e;
             const columnName = (_b = (_a = field.match(mapRegex)) === null || _a === void 0 ? void 0 : _a.groups) === null || _b === void 0 ? void 0 : _b.name;
-            const dbType = (_d = (_c = field.match(dbRegex)) === null || _c === void 0 ? void 0 : _c.groups) === null || _d === void 0 ? void 0 : _d.type;
-            const relationOnUpdate = (_f = (_e = field.match(relationOnUpdateRegex)) === null || _e === void 0 ? void 0 : _e.groups) === null || _f === void 0 ? void 0 : _f.op;
+            const dbType = (_c = field.match(dbRegex)) === null || _c === void 0 ? void 0 : _c.at(0);
+            const relationOnUpdate = (_e = (_d = field.match(relationOnUpdateRegex)) === null || _d === void 0 ? void 0 : _d.groups) === null || _e === void 0 ? void 0 : _e.op;
             return [field.trim().split(' ')[0], { columnName, dbType, relationOnUpdate }];
         })
             .filter((f) => { var _a, _b, _c; return ((_a = f[1]) === null || _a === void 0 ? void 0 : _a.columnName) || ((_b = f[1]) === null || _b === void 0 ? void 0 : _b.dbType) || ((_c = f[1]) === null || _c === void 0 ? void 0 : _c.relationOnUpdate); });

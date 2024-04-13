@@ -39,6 +39,7 @@
     "@oclif/core": "^2.15.0",
     "@prisma/generator-helper": "^5.5.2",
     "@prisma/internals": "^5.5.2",
+    "dotenv": "^16.4.5",
     "glob": "^10.3.10",
     "jsonfile": "^6.1.0",
     "tsc-watch": "^6.0.4"

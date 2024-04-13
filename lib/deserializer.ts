@@ -84,7 +84,7 @@ function renderDocumentation(documentation?: string, tab?: boolean) {
 }
 
 // render all fields present on a model
-function renderModelFields(fields: DMMF.Field[]): string[] {
+function renderModelFields(fields: Readonly<DMMF.Field[]>): string[] {
   return fields.map((field) => {
     const { name, kind, type, documentation, isRequired, isList } = field;
 
@@ -102,7 +102,7 @@ function renderModelFields(fields: DMMF.Field[]): string[] {
   });
 }
 
-function renderIdFieldsOrPrimaryKey(idFields: string[]): string {
+function renderIdFieldsOrPrimaryKey(idFields: Readonly<string[]>): string {
   // as of Prisma version ^2.30.0 idFields has become primaryKey, we should support both
   if (!idFields) return ''; // <- this is a hotfix until it can be looked into
   return idFields.length > 0 ? `@@id([${idFields.join(', ')}])` : '';
