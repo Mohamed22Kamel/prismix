@@ -36,6 +36,7 @@ const renderAttribute = (field: Field) => {
 };
 interface relation extends DMMF.Field {
   relationOnUpdate?: string;
+  map?: string;
 }
 // Render a line of field attributes
 function renderAttributes(field: relation): string {
@@ -45,7 +46,8 @@ function renderAttributes(field: relation): string {
     relationName,
     kind,
     relationOnDelete,
-    relationOnUpdate
+    relationOnUpdate,
+    map
   } = field;
   // handle attributes for scalar and enum fields
   if (kind == 'scalar' || kind == 'enum') {
@@ -61,11 +63,15 @@ function renderAttributes(field: relation): string {
   }
   // handle relation syntax
   if (relationFromFields && kind === 'object') {
-    return relationFromFields.length > 0
-      ? `@relation(name: "${relationName}", fields: [${relationFromFields}], references: [${relationToFields}]${
-          relationOnDelete ? `, onDelete: ${relationOnDelete}` : ''
-        }${relationOnUpdate ? `, onUpdate: ${relationOnUpdate}` : ''})`
-      : `@relation(name: "${relationName}")`;
+    if (relationFromFields.length > 0) {
+      return `@relation(name: "${relationName}", fields: [${relationFromFields}], references: [${relationToFields}]${
+        relationOnDelete ? `, onDelete: ${relationOnDelete}` : ''
+      }${relationOnUpdate ? `, onUpdate: ${relationOnUpdate}` : ''}${
+        map ? `, map: "${map}"` : ''
+      })`;
+    } else {
+      return `@relation(name: "${relationName}")`;
+    }
   }
   return '';
 }
@@ -152,7 +158,7 @@ function renderBlock(type: string, name: string, things: string[], documentation
 function deserializeModel(model: DMMF.Model): string {
   const { name, fields, dbName, primaryKey, uniqueIndexes, documentation } = model;
   return renderBlock(
-    'model',
+    name.includes('view') ? 'view' : 'model',
     name,
     [
       ...renderModelFields(fields),

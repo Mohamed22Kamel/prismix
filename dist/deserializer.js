@@ -36,7 +36,7 @@ const renderAttribute = (field) => {
     };
 };
 function renderAttributes(field) {
-    const { relationFromFields, relationToFields, relationName, kind, relationOnDelete, relationOnUpdate } = field;
+    const { relationFromFields, relationToFields, relationName, kind, relationOnDelete, relationOnUpdate, map } = field;
     if (kind == 'scalar' || kind == 'enum') {
         return `${Object.keys(field)
             .map((property) => renderAttribute(field)[property] && renderAttribute(field)[property](field[property]))
@@ -44,10 +44,14 @@ function renderAttributes(field) {
             .join(' ')}`;
     }
     if (relationFromFields && kind === 'object') {
-        return relationFromFields.length > 0
-            ? `@relation(name: "${relationName}", fields: [${relationFromFields}], references: [${relationToFields}]${relationOnDelete ? `, onDelete: ${relationOnDelete}` : ''}${relationOnUpdate ? `, onUpdate: ${relationOnUpdate}` : ''})`
-            : `@relation(name: "${relationName}")`;
-    }
+        if (relationFromFields.length > 0) {
+          return `@relation(name: "${relationName}", fields: [${relationFromFields}], references: [${relationToFields}]${
+            relationOnDelete ? `, onDelete: ${relationOnDelete}` : ''
+          }${relationOnUpdate ? `, onUpdate: ${relationOnUpdate}` : ''}${map ? `, map: "${map}"` : ''})`;
+        } else {
+          return `@relation(name: "${relationName}")`;
+        }
+      }
     return '';
 }
 function renderDocumentation(documentation, tab) {
@@ -114,7 +118,7 @@ function renderBlock(type, name, things, documentation) {
 function deserializeModel(model) {
     var _a;
     const { name, fields, dbName, primaryKey, uniqueIndexes, documentation } = model;
-    return renderBlock('model', name, [
+    return renderBlock(name.includes('view') ? 'view' : 'model', name, [
         ...renderModelFields(fields),
         ...renderUniqueIndexes(uniqueIndexes),
         renderDbName(dbName),

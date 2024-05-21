@@ -49,7 +49,8 @@ async function getSchema(schemaPath: string) {
             ...field,
             columnName: attributes.columnName,
             dbType: attributes.dbType,
-            relationOnUpdate: attributes.relationOnUpdate
+            relationOnUpdate: attributes.relationOnUpdate,
+            map: attributes.map
           };
         }
       )
@@ -154,6 +155,7 @@ function getCustomAttributes(datamodel: string) {
       const relationOnUpdateRegex = new RegExp(
         /onUpdate: (?<op>Cascade|NoAction|Restrict|SetDefault|SetNull)/
       );
+      const relationMapRegex = new RegExp(/map: "(.*?)"/);
       const doubleAtIndexRegex = new RegExp(/(?<index>@@index\(.*\))/);
       const doubleAtIndexes = pieces
         .reduce((ac: string[], field) => {
@@ -166,12 +168,13 @@ function getCustomAttributes(datamodel: string) {
           const columnName = field.match(mapRegex)?.groups?.name;
           const dbType = field.match(dbRegex)?.at(0);
           const relationOnUpdate = field.match(relationOnUpdateRegex)?.groups?.op;
-          return [field.trim().split(' ')[0], { columnName, dbType, relationOnUpdate }] as [
+          const map = field.match(relationMapRegex)?.groups?.op;
+          return [field.trim().split(' ')[0], { columnName, dbType, relationOnUpdate, map }] as [
             string,
             CustomAttributes['fields'][0]
           ];
         })
-        .filter((f) => f[1]?.columnName || f[1]?.dbType || f[1]?.relationOnUpdate);
+        .filter((f) => f[1]?.columnName || f[1]?.dbType || f[1]?.relationOnUpdate || f[1]?.map);
 
       return {
         ...modelDefinitions,
