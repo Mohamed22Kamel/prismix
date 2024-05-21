@@ -17,6 +17,7 @@ const util_1 = require("util");
 const jsonfile_1 = __importDefault(require("jsonfile"));
 const path_1 = __importDefault(require("path"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const utils_1 = require("./utils");
 dotenv_1.default.config();
 const readJsonFile = (0, util_1.promisify)(jsonfile_1.default.readFile);
 const args = process.argv.slice(2);
@@ -24,10 +25,20 @@ class Prismix extends core_1.Command {
     run() {
         return __awaiter(this, void 0, void 0, function* () {
             this.log(`Prismix: mixing your schemas... 🍹`);
-            const options = (yield readJsonFile(path_1.default.join(process.cwd(), args[0] || 'prismix.config.json')));
-            for (const mixer of options.mixers) {
-                if (!mixer.output)
-                    mixer.output = 'prisma/schema.prisma';
+            let options;
+            if (args.includes('--ignore-config')) {
+                const modelsPaths = yield (0, utils_1.generateConfig)();
+                const mixers = [
+                    { input: modelsPaths, output: 'prisma/schema.prisma' }
+                ];
+                options = { mixers };
+            }
+            else {
+                options = (yield readJsonFile(path_1.default.join(process.cwd(), args[0] || 'prismix.config.json')));
+                for (const mixer of options.mixers) {
+                    if (!mixer.output)
+                        mixer.output = 'prisma/schema.prisma';
+                }
             }
             yield (0, prismix_1.prismix)(options);
         });
